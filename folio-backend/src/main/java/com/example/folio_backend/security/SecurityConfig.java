@@ -12,13 +12,15 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
 
-    private JwtFilter jwtAuthFilter;
+    private final JwtFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
     @Bean
@@ -46,5 +48,6 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
     }
 }
