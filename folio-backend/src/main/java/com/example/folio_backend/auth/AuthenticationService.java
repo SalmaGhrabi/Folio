@@ -3,18 +3,23 @@ package com.example.folio_backend.auth;
 import com.example.folio_backend.email.EmailService;
 import com.example.folio_backend.email.EmailTemplateName;
 import com.example.folio_backend.role.RoleRepossitory;
+import com.example.folio_backend.security.JwtService;
 import com.example.folio_backend.user.Token;
 import com.example.folio_backend.user.TokenRepository;
 import com.example.folio_backend.user.User;
 import com.example.folio_backend.user.UserRepository;
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -26,6 +31,8 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
     private final EmailService emailService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
     @Value("${application.mailing.frontend.activation-url}")
     private String activationUrl;
 
@@ -82,4 +89,19 @@ public class AuthenticationService {
         }
         return codeBuilder.toString();
     }
+
+    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        var auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+        var claims = new HashMap<String,Object>();
+        var user = (User) auth.getPrincipal();
+        claims.put("fullname", user.fullName());
+        var jwtToken = jwtService.generateToken(claims, user);
+        return AuthenticationResponse.builder()
+                .token(jwtToken).build();
+     }
 }
