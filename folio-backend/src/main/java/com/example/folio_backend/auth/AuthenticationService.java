@@ -14,8 +14,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -104,4 +106,21 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .token(jwtToken).build();
      }
+
+     @Transactional
+    public void activateAccount(String token) throws MessagingException {
+        Token savedToken= tokenRepository.findByToken(token)
+                //todo exception has to be defined
+                .orElseThrow(() -> new RuntimeException("TOKEN DOES NOT EXIST"));
+        if (LocalDateTime.now().isAfter(savedToken.getExpiresAt())) {
+            sendValidationEmail(savedToken.getUser());
+            throw new RuntimeException("This activation token is expired. A new token has been sent to the same email address. ");
+        }
+        var user = userRepository.findById(savedToken.getUser().getId())
+            .orElseThrow(() -> new UsernameNotFoundException("USER DOES NOT EXIST"));
+        user.setEnabled(true);
+        userRepository.save(user);
+        savedToken.setValidatedAt(LocalDateTime.now());
+        tokenRepository.save(savedToken);
+    }
 }
