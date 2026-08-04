@@ -2,7 +2,7 @@ package com.example.folio_backend.auth;
 
 import com.example.folio_backend.email.EmailService;
 import com.example.folio_backend.email.EmailTemplateName;
-import com.example.folio_backend.role.RoleRepossitory;
+import com.example.folio_backend.role.RoleRepository;
 import com.example.folio_backend.security.JwtService;
 import com.example.folio_backend.user.Token;
 import com.example.folio_backend.user.TokenRepository;
@@ -12,12 +12,14 @@ import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -28,7 +30,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-    private final RoleRepossitory roleRepossitory;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
@@ -39,7 +41,7 @@ public class AuthenticationService {
     private String activationUrl;
 
     public void register(RegistrationRequest request) throws MessagingException {
-         var userRole = roleRepossitory.findByName("USER")
+         var userRole = roleRepository.findByName("USER")
                  // TODO- better exception HANDLING
                  .orElseThrow(() -> new IllegalStateException("ROLE USER was not initialized"));
          var user = User.builder()
@@ -51,6 +53,9 @@ public class AuthenticationService {
                  .enabled(false)
                  .roles(List.of(userRole))
                  .build();
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is already in use");
+        }
          userRepository.save(user);
          sendValidationEmail(user);
     }
