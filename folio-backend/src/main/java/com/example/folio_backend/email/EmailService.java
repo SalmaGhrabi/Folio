@@ -49,7 +49,8 @@ public class EmailService {
         );
         Map<String,Object> properties =  new HashMap<>();
         properties.put("username", username);
-        properties.put("confirmationUrl", confirmationUrl);
+        String fullConfirmationUrl = confirmationUrl + "?token=" + activationCode;
+        properties.put("confirmationUrl", fullConfirmationUrl);
         properties.put("activationCode", activationCode);
 
         Context context = new Context();
