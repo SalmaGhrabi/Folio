@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/folio
+    url: jdbc:postgresql://localhost:5532/folio
     username: username
     password: password
     driver-class-name: org.postgresql.Driver
@@ -12,7 +12,7 @@ spring:
       hibernate:
         format_sql: true
     database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSLDialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
   mail:
     host: localhost
     port: 1025
@@ -28,3 +28,15 @@ spring:
         connectiontimeout: 5000
         timeout: 3000
         writetimeout: 5000
+
+application:
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET:oyJsAxGrjB4J7KmBcwRnS3YcDCFTv1XlCwMSI886yKiKo3wVMXnfWNGoWFv1jlEE}
+      expiration: 8640000
+  mailing:
+    frontend:
+      activation-url: http://localhost:4200/activate-account
+    sender: ${MAIL_SENDER:contact@folio.com}
+server:
+  port: 8088
