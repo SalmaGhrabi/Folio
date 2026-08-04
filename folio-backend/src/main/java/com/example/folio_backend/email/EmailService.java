@@ -2,9 +2,9 @@ package com.example.folio_backend.email;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -25,6 +25,8 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
+    @Value("${application.mailing.sender}")
+    private String mailFrom;
 
     @Async
     public void sendEmail(
@@ -56,7 +58,7 @@ public class EmailService {
         Context context = new Context();
         context.setVariables(properties);
 
-        helper.setFrom("salma.ghrabi@ensi-uma.tn");
+        helper.setFrom(mailFrom);
         helper.setTo(to);
         helper.setSubject(subject);
 
