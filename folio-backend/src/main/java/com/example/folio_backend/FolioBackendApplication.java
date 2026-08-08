@@ -1,7 +1,7 @@
 package com.example.folio_backend;
 
 import com.example.folio_backend.role.Role;
-import com.example.folio_backend.role.RoleRepossitory;
+import com.example.folio_backend.role.RoleRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
-@EnableJpaAuditing
+@EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @EnableAsync
 public class FolioBackendApplication {
 
@@ -19,10 +19,10 @@ public class FolioBackendApplication {
 	}
 
     @Bean
-    public CommandLineRunner commandLineRunner(RoleRepossitory roleRepossitory) {
+    public CommandLineRunner commandLineRunner(RoleRepository roleRepository) {
         return args -> {
-            if (roleRepossitory.findByName("USER").isEmpty()) {
-                roleRepossitory.save(
+            if (roleRepository.findByName("USER").isEmpty()) {
+                roleRepository.save(
                         Role.builder().name("USER").build());
             }
         };
