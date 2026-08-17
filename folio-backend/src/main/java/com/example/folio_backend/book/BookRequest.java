@@ -2,7 +2,6 @@ package com.example.folio_backend.book;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.NonNull;
 
 public record BookRequest(
         Integer id,
@@ -11,7 +10,7 @@ public record BookRequest(
         String title,
         @NotNull(message = "101")
         @NotEmpty(message = "101")
-        String authorNAme,
+        String authorName,
         @NotNull(message = "102")
         @NotEmpty(message = "102")
         String isbn,
