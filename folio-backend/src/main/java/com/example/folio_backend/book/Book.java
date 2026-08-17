@@ -41,7 +41,7 @@ public class Book extends BaseEntity {
 
     @Transient
     public double getRate() {
-        if (feedbacks != null && feedbacks.isEmpty()) {
+        if (feedbacks == null || feedbacks.isEmpty()) {
             return 0.0;
         }
         var rate = this.feedbacks.stream()
