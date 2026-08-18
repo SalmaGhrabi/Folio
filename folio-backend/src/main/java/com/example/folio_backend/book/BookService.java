@@ -147,12 +147,17 @@ public class BookService {
             throw new OperationNotPermittedException("The requested book cannot be borrowed since it is archived or not shareable!");
         }
         User user = ((User) connectedUser.getPrincipal());
-        if(Objects.equals(user.getId(), book.getOwner().getId())) {
-            throw new OperationNotPermittedException("You cannot borrow your own book!");
+        if (Objects.equals(book.getAuthorName(), user.getName())) {
+            throw new OperationNotPermittedException("You cannot borrow your own book");
         }
-        final boolean isAlreadyBorrowed = bookTransactionHistoryRepository.isAlreadyBorrowedByUser(bookId, user.getId());
-        if(isAlreadyBorrowed) {
-            throw new OperationNotPermittedException("The requested book is already borrowed!");
+        final boolean isAlreadyBorrowedByUser = bookTransactionHistoryRepository.isAlreadyBorrowedByUser(bookId, user.getId());
+        if (isAlreadyBorrowedByUser) {
+            throw new OperationNotPermittedException("You already borrowed this book and it is still not returned or the return is not approved by the owner");
+        }
+
+        final boolean isAlreadyBorrowedByOtherUser = bookTransactionHistoryRepository.isAlreadyBorrowed(bookId);
+        if (isAlreadyBorrowedByOtherUser) {
+            throw new OperationNotPermittedException("Te requested book is already borrowed");
         }
         BookTransactionHistory bookTransactionHistory = BookTransactionHistory.builder()
                 .user(user)
