@@ -184,12 +184,9 @@ public class BookService {
     public Integer approveReturnBorrowedBook(Integer bookId, Authentication connectedUser) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("Book with ID : " + bookId + " not found"));
-        if(book.isArchived() || !book.isShareable()) {
-            throw new OperationNotPermittedException("The requested book cannot be borrowed since it is archived or not shareable!");
-        }
         User user = ((User) connectedUser.getPrincipal());
-        if(Objects.equals(user.getId(), book.getOwner().getId())) {
-            throw new OperationNotPermittedException("You cannot borrow or return your own book!");
+        if(!Objects.equals(user.getId(), book.getOwner().getId())) {
+            throw new OperationNotPermittedException("Only the book owner can approve a return!");
         }
         BookTransactionHistory bookTransactionHistory = bookTransactionHistoryRepository.findByBookIdAndOwnerId(bookId, user.getId())
                 .orElseThrow(
