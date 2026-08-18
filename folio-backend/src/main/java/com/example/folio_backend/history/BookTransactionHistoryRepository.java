@@ -29,20 +29,22 @@ public interface BookTransactionHistoryRepository extends JpaRepository<BookTran
 
     @Query("""
         SELECT
-        (COUNT(*)>0) AS isBorrowed
-        FROM BookTransactionHistory bookTransactionHistory
-        WHERE bookTransactionHistory.user.id = :userId
-        AND bookTransactionHistory.book.id = :bookId
-        AND bookTransactionHistory.returnApproved = false
+        CASE WHEN
+            COUNT(h) > 0 THEN true ELSE false END
+        FROM BookTransactionHistory h
+        WHERE h.user.id = :userId
+        AND h.book.id = :bookId
+        AND h.returnApproved = false
 """)
     boolean isAlreadyBorrowedByUser(@Param("bookId") Integer bookId, @Param("userId") Integer userId);
 
     @Query("""
         SELECT
-        (COUNT(*)>0) AS isBorrowed
-        FROM BookTransactionHistory bookTransactionHistory
-        WHERE bookTransactionHistory.book.id = :bookId
-        AND bookTransactionHistory.returnApproved = false
+        CASE WHEN
+            COUNT(h) > 0 THEN true ELSE false END
+        FROM BookTransactionHistory h
+        WHERE h.book.id = :bookId
+        AND h.returnApproved = false
 """)
     boolean isAlreadyBorrowed(@Param("bookId") Integer bookId);
 
@@ -59,10 +61,10 @@ public interface BookTransactionHistoryRepository extends JpaRepository<BookTran
     @Query("""
         SELECT transaction
         FROM BookTransactionHistory transaction
-        WHERE transaction.book.owner.id = :userId
+        WHERE transaction.book.owner.id = :ownerId
         AND transaction.book.id = :bookId
         AND transaction.returned = true
         AND transaction.returnApproved = false
 """)
-    Optional<BookTransactionHistory> findByBookIdAndOwnerId(@Param("bookId") Integer bookId, @Param("userId") Integer userId);
+    Optional<BookTransactionHistory> findByBookIdAndOwnerId(@Param("bookId") Integer bookId, @Param("ownerId") Integer ownerId);
 }
