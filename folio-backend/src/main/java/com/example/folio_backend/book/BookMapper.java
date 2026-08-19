@@ -1,5 +1,6 @@
 package com.example.folio_backend.book;
 
+import com.example.folio_backend.file.FileUtils;
 import com.example.folio_backend.history.BookTransactionHistory;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class BookMapper {
                 .archived(book.isArchived())
                 .shareable(book.isShareable())
                 .owner(book.getOwner().fullName())
-                // TO DO : IMPLEMENT cover ()
+                .coverImage(FileUtils.readFileFromLocation(book.getBookCover()))
                 .build();
     }
 
