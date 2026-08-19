@@ -209,7 +209,13 @@ public class BookService {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("Book with ID : " + bookId + " not found"));
         User user = ((User) connectedUser.getPrincipal());
+        if(!Objects.equals(user.getId(), book.getOwner().getId())) {
+            throw new OperationNotPermittedException("Only the book owner can upload cover picture!");
+        }
         var bookCover = fileStorageService.saveFile(file, user.getId());
+        if (bookCover == null) {
+            throw new RuntimeException("Failed to store cover image");
+        }
         book.setBookCover(bookCover);
         bookRepository.save(book);
 
