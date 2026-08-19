@@ -12,7 +12,7 @@ import java.nio.file.Path;
 public class FileUtils {
     public static byte[] readFileFromLocation(String fileUrl) {
         if (StringUtils.isBlank(fileUrl)) {
-            return null;
+            return new byte[0];
         }
         try {
             Path filePath = new File(fileUrl).toPath();
