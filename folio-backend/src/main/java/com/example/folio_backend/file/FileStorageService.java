@@ -20,7 +20,7 @@ import static java.io.File.separator;
 @RequiredArgsConstructor
 public class FileStorageService {
 
-    @Value("${application.file.upload.photos-output-path}")
+    @Value("${application.file.upload.photos-output-path:./uploads}")
     private String fileUploadPath;
     public String saveFile(
             @NonNull MultipartFile sourceFile,

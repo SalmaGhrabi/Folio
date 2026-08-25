@@ -40,6 +40,6 @@ application:
     sender: ${MAIL_SENDER:contact@folio.com}
   file:
     upload:
-      photos-output-path: ./uploads
+      photos-output-path: ${PHOTOS_OUTPUT_PATH:./uploads}
 server:
   port: 8088
