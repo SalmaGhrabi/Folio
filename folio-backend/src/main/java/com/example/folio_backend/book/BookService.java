@@ -2,6 +2,7 @@ package com.example.folio_backend.book;
 
 import com.example.folio_backend.commun.PageResponse;
 import com.example.folio_backend.exception.OperationNotPermittedException;
+import com.example.folio_backend.file.FileStorageService;
 import com.example.folio_backend.history.BookTransactionHistory;
 import com.example.folio_backend.history.BookTransactionHistoryRepository;
 import com.example.folio_backend.user.User;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +28,8 @@ public class BookService {
     private final BookMapper bookMapper;
     private final BookRepository bookRepository;
     private final BookTransactionHistoryRepository bookTransactionHistoryRepository;
+    private final FileStorageService fileStorageService;
+
     public Integer save(BookRequest request, Authentication connectedUser) {
         User user = ((User) connectedUser.getPrincipal());
         Book book = bookMapper.toBook(request);
@@ -199,5 +203,22 @@ public class BookService {
                 );
         bookTransactionHistory.setReturnApproved(true);
         return bookTransactionHistoryRepository.save(bookTransactionHistory).getId();
+    }
+
+    public void uploadBookCoverPicture(MultipartFile file, Authentication connectedUser, Integer bookId) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException("Book with ID : " + bookId + " not found"));
+        User user = ((User) connectedUser.getPrincipal());
+        if(!Objects.equals(user.getId(), book.getOwner().getId())) {
+            throw new OperationNotPermittedException("Only the book owner can upload cover picture!");
+        }
+        var bookCover = fileStorageService.saveFile(file, user.getId());
+        if (bookCover == null) {
+            throw new RuntimeException("Failed to store cover image");
+        }
+        book.setBookCover(bookCover);
+        bookRepository.save(book);
+
+
     }
 }
