@@ -2,15 +2,18 @@ package com.example.folio_backend.feedback;
 
 import com.example.folio_backend.book.Book;
 import com.example.folio_backend.book.BookRepository;
+import com.example.folio_backend.commun.PageResponse;
 import com.example.folio_backend.exception.OperationNotPermittedException;
-import com.example.folio_backend.history.BookTransactionHistory;
 import com.example.folio_backend.user.User;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -33,5 +36,23 @@ public class FeedbackService {
         }
         Feedback feedback = feedbackMapper.toFeedback(request);
         return feedbackRepository.save(feedback).getId();
+    }
+
+    public PageResponse<FeedbackResponse> findAllFeedbacksByBook(Integer bookId, int page, int size, Authentication connectedUser) {
+        Pageable pageable = PageRequest.of(page, size);
+        User user = ((User) connectedUser.getPrincipal());
+        Page<Feedback> feedbacks = feedbackRepository.FindAllByBookId(bookId, pageable);
+        List<FeedbackResponse> feedbackResponseList = feedbacks.stream()
+                .map(f -> feedbackMapper.toFeedbackResponse(f, user.getId()))
+                .toList();
+        return new PageResponse<>(
+                feedbackResponseList,
+                feedbacks.getNumber(),
+                feedbacks.getSize(),
+                feedbacks.getTotalElements(),
+                feedbacks.getTotalPages(),
+                feedbacks.isFirst(),
+                feedbacks.isLast()
+        );
     }
 }
