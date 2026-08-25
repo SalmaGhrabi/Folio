@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.UUID;
 
 import static java.io.File.separator;
 
@@ -41,12 +42,14 @@ public class FileStorageService {
                 return null;
             }
         }
-        final String fileExtension = getFileExtension(sourceFile.getOriginalFilename());
-        String targetFilePath = finalUploadPath + separator + System.currentTimeMillis() + "." + fileExtension;
+        final String fileExtension = getFileExtension(sourceFile.getOriginalFilename())
+                .replaceAll("[^a-z0-9]", "");
+        final String fileName = UUID.randomUUID() + (fileExtension.isBlank() ? "" : "." + fileExtension);
+        String targetFilePath = finalUploadPath + separator + fileName;
         Path targetPath = Paths.get(targetFilePath);
-        try {
-            Files.write(targetPath, sourceFile.getBytes());
-            log.info("Successfully saved the file to the target folder : " + targetFilePath);
+        try (java.io.InputStream inputStream = sourceFile.getInputStream()){
+            Files.copy(inputStream, targetPath);
+            log.info("Successfully saved the file to the target folder : {}", targetFilePath);
             return targetFilePath;
         } catch (IOException e) {
             log.error("Failed to save the file", e);
