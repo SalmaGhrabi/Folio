@@ -1,8 +1,8 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {BrowserModule} from '@angular/platform-browser';
 
 @Component({
-  imports: [RouterOutlet],
+  imports: [BrowserModule],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',
