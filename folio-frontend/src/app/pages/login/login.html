@@ -56,7 +56,13 @@
             placeholder="Your password"
             class="form-input"
           />
-          <button class="password-toggle" (click)="showPassword = !showPassword" type="button">
+          <button
+            class="password-toggle"
+            (click)="showPassword = !showPassword"
+            type="button"
+            [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+            [attr.aria-pressed]="showPassword"
+          >
             {{ showPassword ? '🙈' : '👁️' }}
           </button>
         </div>
