@@ -31,6 +31,8 @@
             inputmode="numeric"
             maxlength="1"
             class="code-box"
+            autocomplete="one-time-code"
+            [attr.aria-label]="'Activation code digit ' + (i+1)"
             [value]="digit"
             (input)="onInput($event, i)"
             (keydown)="onKeydown($event, i)"
