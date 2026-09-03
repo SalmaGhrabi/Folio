@@ -10,6 +10,6 @@ export class Token {
   }
 
   get token() {
-    return localStorage.getItem('token') as string;
+    return localStorage.getItem('token') ?? '';
   }
 }
