@@ -5,6 +5,11 @@ import {ActivateAccount} from './pages/activate-account/activate-account';
 
 export const routes: Routes = [
   {
+    path: '',
+    redirectTo: 'login',
+    pathMatch: 'full'
+  },
+  {
     path: 'login',
     component: Login
   },
@@ -15,5 +20,9 @@ export const routes: Routes = [
   {
     path: 'activate-account',
     component: ActivateAccount
+  },
+  {
+    path: '**',
+    redirectTo: 'login'
   }
 ];
