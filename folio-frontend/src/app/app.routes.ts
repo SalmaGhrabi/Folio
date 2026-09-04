@@ -22,6 +22,10 @@ export const routes: Routes = [
     component: ActivateAccount
   },
   {
+    path: 'books',
+    loadChildren: () => import('./modules/book/book-module').then(m => m.BookModule)
+  },
+  {
     path: '**',
     redirectTo: 'login'
   }
