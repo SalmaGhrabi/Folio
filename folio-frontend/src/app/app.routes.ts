@@ -6,7 +6,7 @@ import {ActivateAccount} from './pages/activate-account/activate-account';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'books',
     pathMatch: 'full'
   },
   {
