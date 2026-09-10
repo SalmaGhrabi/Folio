@@ -1,9 +1,16 @@
 <h3>Books List</h3>
 <hr>
+
 <div class="d-flex justify-content-start gap-2 flex-wrap">
-  @for(book of bookResponse.content; track book) {
-    <span>
-      {{book.title}}
-    </span>
+  @for (book of bookResponse()?.content; track book.id) {
+    <div class="card p-2 shadow-sm" style="width: 200px;">
+      <span class="fw-bold text-primary">{{ book.title }}</span>
+      <small class="text-muted">{{ book.authorName }}</small>
+    </div>
+  } @empty {
+    <!-- Ce bloc s'affiche si content est vide (Array(0)) OU pendant le chargement -->
+    <div class="alert alert-info w-100" role="alert">
+      Aucun livre trouvé dans la base de données.
+    </div>
   }
 </div>

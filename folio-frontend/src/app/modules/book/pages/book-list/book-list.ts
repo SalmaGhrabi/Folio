@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, signal} from '@angular/core';
 import {BookService} from '../../../../services/services/book.service';
 import {Router} from '@angular/router';
 import {PageResponseBookResponse} from '../../../../services/models/page-response-book-response';
@@ -11,9 +11,9 @@ import {PageResponseBookResponse} from '../../../../services/models/page-respons
 })
 export class BookList implements OnInit {
 
-  bookResponse: PageResponseBookResponse = {};
-  page = 0;
-  size = 5;
+  protected bookResponse = signal<PageResponseBookResponse>({});
+  private page = 0;
+  private size = 5;
 
   constructor(
     private bookService: BookService,
@@ -31,7 +31,8 @@ export class BookList implements OnInit {
       size: this.size
     }).then(
      (books) => {
-        this.bookResponse = books;
+       console.log("Backend response: ", books);
+       this.bookResponse.set(books);
      })
     .catch((e) => {
       console.error("Error getting book list", e);
