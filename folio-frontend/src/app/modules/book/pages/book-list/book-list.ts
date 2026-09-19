@@ -2,9 +2,13 @@ import {Component, OnInit, signal} from '@angular/core';
 import {BookService} from '../../../../services/services/book.service';
 import {Router} from '@angular/router';
 import {PageResponseBookResponse} from '../../../../services/models/page-response-book-response';
+import BookCard from '../../components/book-card/book-card';
+import {BookResponse} from '../../../../services/models/book-response';
 
 @Component({
-  imports: [],
+  imports: [
+    BookCard
+  ],
   selector: 'app-book-list',
   styleUrl: './book-list.css',
   templateUrl: './book-list.html',
@@ -37,5 +41,17 @@ export class BookList implements OnInit {
     .catch((e) => {
       console.error("Error getting book list", e);
     })
+  }
+
+  protected onBorrow(book: BookResponse) {
+    console.log('Borrow:', book);
+  }
+
+  protected onShowDetails(book: BookResponse) {
+    console.log('Details:', book);
+  }
+
+  protected onAddToWaitingList(book: BookResponse) {
+    console.log('Waiting list:', book);
   }
 }

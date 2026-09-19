@@ -1,0 +1,42 @@
+<div class="book-card">
+  <img [src]="bookCover" class="book-cover" alt="{{ book.title }}" />
+
+  <div class="book-body">
+    <span class="book-title">{{ book.title }}</span>
+    <span class="book-author">{{ book.authorName }}</span>
+    <span class="book-isbn">ISBN: {{ book.isbn }}</span>
+    <p class="book-synopsis">{{ book.synopsis }}</p>
+  </div>
+
+  <div class="book-footer">
+    <span class="book-rating">★ {{ book.rate | number:'1.1-1' }}</span>
+
+    @if (!manage) {
+      <div class="book-actions">
+        <button class="action-btn info" (click)="onShowDetails()" title="Details">
+          <i class="fas fa-circle-info"></i>
+        </button>
+        <button class="action-btn borrow" (click)="onBorrow()" title="Borrow">
+          <i class="fas fa-list-check"></i>
+        </button>
+        <button class="action-btn wishlist" (click)="onAddToWaitingList()" title="Add to wishlist">
+          <i class="fas fa-heart"></i>
+        </button>
+      </div>
+    }
+
+    @if (manage) {
+      <div class="book-actions">
+        <button class="action-btn edit" (click)="onEdit()" title="Edit">
+          <i class="fas fa-edit"></i>
+        </button>
+        <button class="action-btn share" (click)="onShare()" title="Share">
+          <i class="fas fa-share-nodes"></i>
+        </button>
+        <button class="action-btn archive" (click)="onArchive()" title="Archive">
+          <i class="fas fa-archive"></i>
+        </button>
+      </div>
+    }
+  </div>
+</div>

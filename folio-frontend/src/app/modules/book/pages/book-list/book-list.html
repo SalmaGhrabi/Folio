@@ -1,16 +1,21 @@
-<h3>Books List</h3>
-<hr>
+<div class="book-list-page">
+  <div class="book-list-header">
+    <h2>Browse Books</h2>
+    <p>Discover books shared by the Folio community</p>
+  </div>
 
-<div class="d-flex justify-content-start gap-2 flex-wrap">
-  @for (book of bookResponse()?.content; track book.id) {
-    <div class="card p-2 shadow-sm" style="width: 200px;">
-      <span class="fw-bold text-primary">{{ book.title }}</span>
-      <small class="text-muted">{{ book.authorName }}</small>
-    </div>
-  } @empty {
-    <!-- Ce bloc s'affiche si content est vide (Array(0)) OU pendant le chargement -->
-    <div class="alert alert-info w-100" role="alert">
-      Aucun livre trouvé dans la base de données.
-    </div>
-  }
+  <div class="books-grid">
+    @for (book of bookResponse()?.content; track book.id) {
+      <app-book-card
+        [book]="book"
+        (borrow)="onBorrow($event)"
+        (details)="onShowDetails($event)"
+        (addToWaitingList)="onAddToWaitingList($event)"
+      />
+    } @empty {
+      <div class="empty-state">
+        <p>No books found. Be the first to share one!</p>
+      </div>
+    }
+  </div>
 </div>

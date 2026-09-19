@@ -1,0 +1,40 @@
+.book-list-page {
+  padding: 40px;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #f7f8fc;
+  min-height: 100vh;
+}
+
+.book-list-header {
+  margin-bottom: 32px;
+}
+
+.book-list-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 4px;
+}
+
+.book-list-header p {
+  font-size: 14px;
+  color: #888;
+}
+
+.books-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 24px;
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  color: #aaa;
+}
+
+.empty-state p {
+  font-size: 15px;
+  margin-top: 12px;
+}
