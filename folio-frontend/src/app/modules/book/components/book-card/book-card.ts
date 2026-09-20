@@ -1,12 +1,13 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {BookResponse} from '../../../../services/models/book-response';
 import {DecimalPipe} from '@angular/common';
+import {Rating} from '../rating/rating';
 
 const DEFAULT_BOOK_COVER =
   'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTJlMmUyIi8+CiAgPHJlY3QgeD0iOCIgeT0iOCIgd2lkdGg9IjE4NCIgaGVpZ2h0PSIyODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2JiYiIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHRleHQgeD0iNTAlIiB5PSI0OCUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzg4OCI+Tm8gQ292ZXI8L3RleHQ+CiAgPHRleHQgeD0iNTAlIiB5PSI1NiUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgZmlsbD0iI2FhYSI+QXZhaWxhYmxlPC90ZXh0Pgo8L3N2Zz4K';
 
 @Component({
-  imports: [DecimalPipe],
+  imports: [Rating],
   selector: 'app-book-card',
   styleUrl: './book-card.css',
   templateUrl: './book-card.html',

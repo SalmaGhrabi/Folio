@@ -9,7 +9,7 @@
   </div>
 
   <div class="book-footer">
-    <span class="book-rating">★ {{ book.rate | number:'1.1-1' }}</span>
+    <app-rating [rating]="book.rate || 0"></app-rating>
 
     @if (!manage) {
       <div class="book-actions">
