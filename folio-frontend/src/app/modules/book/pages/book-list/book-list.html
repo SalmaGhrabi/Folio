@@ -1,8 +1,33 @@
 <div class="book-list-page">
-  <div class="book-list-header">
-    <h2>Browse Books</h2>
-    <p>Discover books shared by the Folio community</p>
+  <div class="book-list-header d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2>Browse Books</h2>
+      <p class="text-muted">Discover books shared by the Folio community</p>
+    </div>
+
+    <div class="d-flex align-items-center gap-2">
+      <label for="pageSize" class="form-label mb-0 text-nowrap small text-muted">Items per page:</label>
+      <select
+        id="pageSize"
+        class="form-select form-select-sm style-select"
+        [ngModel]="size()"
+        (ngModelChange)="onSizeChange($event)">
+        <option [ngValue]="5">5</option>
+        <option [ngValue]="10">10</option>
+        <option [ngValue]="20">20</option>
+      </select>
+    </div>
   </div>
+
+
+  @if (message) {
+    <div class="alert "
+         [class.alert-danger]="level==='error'"
+         [class.alert-success]="level==='success'"
+         role="alert">
+      <p class="mb-0">{{message}}</p>
+    </div>
+  }
 
   <div class="books-grid">
     @for (book of bookResponse()?.content; track book.id) {
@@ -13,9 +38,65 @@
         (addToWaitingList)="onAddToWaitingList($event)"
       />
     } @empty {
-      <div class="empty-state">
+      <div class="empty-state text-center py-5">
+        <i class="fa-solid fa-book-open fa-3x text-muted mb-3"></i>
         <p>No books found. Be the first to share one!</p>
       </div>
     }
   </div>
+
+  @if (totalPages() > 1) {
+    <div class="d-flex flex-column align-items-center mt-4 gap-2">
+      <nav aria-label="Book catalog pagination">
+        <ul class="pagination pagination-md shadow-sm mb-0">
+          <li class="page-item" [class.disabled]="page() ===0">
+            <button class="page-link"
+                    (click)="goToFirstPage()"
+                    [disabled]="page() === 0"
+                    aria-label="First page">
+              <i class="fa-solid fa-angles-left"></i>
+            </button>
+          </li>
+          <li class="page-item" [class.disabled]="page() === 0">
+            <button class="page-link"
+                    (click)="goToPreviousPage()"
+                    [disabled]="page() === 0"
+                    aria-label="Previous page">
+              <i class="fa-solid fa-angle-left"></i>
+            </button>
+          </li>
+          @for (pageIndex of visiblePages(); track pageIndex) {
+            <li class="page-item"
+                [class.active]="page() === pageIndex" >
+              <button class="page-link" (click)="goToPage(pageIndex)" >
+                {{ pageIndex+ 1 }}
+              </button>
+            </li>
+          }
+          <li class="page-item" [class.disabled]="isLastPage()">
+            <button class="page-link"
+                    (click)="goToNextPage()"
+                    [disabled]="isLastPage()"
+                    aria-label="Next page">
+              <i class="fa-solid fa-angle-right"></i>
+            </button>
+          </li>
+          <li class="page-item" [class.disabled]="isLastPage()">
+            <button class="page-link"
+                    (click)="goToLastPage()"
+                    [disabled]="isLastPage()"
+                    aria-label="Last page">
+              <i class="fa-solid fa-angles-right"></i>
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <span class="text-muted small">
+        Page <strong> {{ page()+1 }} </strong> of <strong>{{ totalPages() }} </strong>
+        ({{ bookResponse()?.totalElements ?? 0 }} total books)
+      </span>
+
+    </div>
+  }
 </div>
