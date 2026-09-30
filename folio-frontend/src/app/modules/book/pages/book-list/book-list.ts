@@ -9,7 +9,7 @@ import {FormsModule} from '@angular/forms';
 
 @Component({
   imports: [
-    BookCard, CommonModule, FormsModule
+    BookCard,CommonModule, FormsModule
   ],
   selector: 'app-book-list',
   styleUrl: './book-list.css',
@@ -20,8 +20,8 @@ export class BookList implements OnInit {
   protected bookResponse = signal<PageResponseBookResponse>({});
   protected page = signal<number>(0);
   protected size = signal<number>(5);
-  protected message = '';
-  protected level: 'success' | 'error' = 'success';
+  protected message = signal<string>('');
+  protected level = signal<'success' | 'error'>('success');
 
   protected totalPages = computed(() => this.bookResponse()?.totalPages ?? 0);
 
@@ -115,11 +115,25 @@ export class BookList implements OnInit {
   }
 
   protected onBorrow(book: BookResponse) {
-    console.log('Borrow:', book);
+    this.message.set('');
+    this.bookService.borrowBook({
+      'book-id': book.id as number
+      }).then(
+      (borrowedBook) => {
+        console.log('Borrow:', borrowedBook);
+        this.level.set('success');
+        this.message.set('Book successfully added to your list');
+        this.findAllBooks();
+      })
+    .catch((err) => {
+      console.log('Error borrowing book',err);
+      this.level.set('error');
+      this.message.set(err.error.error);
+    });
   }
 
   protected onShowDetails(book: BookResponse) {
-    console.log('Details:', book);
+    this.router.navigate(['books', 'details', book.id]);
   }
 
   protected onAddToWaitingList(book: BookResponse) {

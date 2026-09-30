@@ -20,12 +20,13 @@
   </div>
 
 
-  @if (message) {
-    <div class="alert "
-         [class.alert-danger]="level==='error'"
-         [class.alert-success]="level==='success'"
+  @if (message()) {
+    <div class="alert alert-dismissible fade show mb-4"
+         [class.alert-danger]="level()==='error'"
+         [class.alert-success]="level()==='success'"
          role="alert">
-      <p class="mb-0">{{message}}</p>
+      <p class="mb-0">{{ message() }}</p>
+      <button type="button" class="btn-close" (click)= "message.set('')" aria-label="Close"></button>
     </div>
   }
 

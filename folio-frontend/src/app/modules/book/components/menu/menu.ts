@@ -1,5 +1,6 @@
 import { Component, signal, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import {Router, RouterLink, RouterLinkActive} from '@angular/router';
+import {TokenService} from '../../../../services/token/token';
 
 interface NavItem {
   label: string;
@@ -18,9 +19,10 @@ interface NavItem {
 })
 export class Menu {
   private readonly router = inject(Router);
+  private tokenService = inject(TokenService);
   protected readonly isCollapsed = signal<boolean>(true);
 
-  protected readonly username = signal<string>('Salma');
+  protected readonly username = signal(this.tokenService.username);
 
   protected readonly navItems: readonly NavItem[] = [
     { label: 'Home', route: '/books', icon: 'fa-home-alt', exact: true },
