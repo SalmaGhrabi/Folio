@@ -3,7 +3,7 @@ import {AuthenticationRequest} from '../../services/models/authentication-reques
 import {FormsModule} from '@angular/forms';
 import {Router} from '@angular/router';
 import {AuthenticationService} from '../../services/services/authentication.service';
-import {Token} from '../../services/token/token';
+import {TokenService} from '../../services/token/token';
 @Component({
   imports: [
     FormsModule
@@ -21,7 +21,7 @@ export class Login {
   constructor(
     private router: Router,
     private authService: AuthenticationService,
-    private tokenService: Token
+    private tokenService: TokenService
   ) {
   }
 

@@ -3,7 +3,6 @@ import {RegistrationRequest} from '../../services/models/registration-request';
 import {FormsModule} from '@angular/forms';
 import {Router} from '@angular/router';
 import {AuthenticationService} from '../../services/services/authentication.service';
-import {Token} from '../../services/token/token';
 
 @Component({
   imports: [

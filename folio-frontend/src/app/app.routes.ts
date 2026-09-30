@@ -6,7 +6,7 @@ import {ActivateAccount} from './pages/activate-account/activate-account';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'books',
     pathMatch: 'full'
   },
   {
@@ -20,6 +20,10 @@ export const routes: Routes = [
   {
     path: 'activate-account',
     component: ActivateAccount
+  },
+  {
+    path: 'books',
+    loadChildren: () => import('./modules/book/book-module').then(m => m.BookModule)
   },
   {
     path: '**',
