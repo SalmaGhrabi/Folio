@@ -112,7 +112,15 @@ export class MyBooks implements OnInit {
   }
 
   protected archiveBook(book: BookResponse) {
-
+    this.bookService.updateArchivedStatus({
+      'book-id': book.id as number
+    }).then(() => {
+      book.archived = !book.archived;
+      if (book.shareable) {
+        book.shareable = false;
+      }
+      this.findAllBooks();
+    })
   }
 
   protected shareBook(book: BookResponse) {
@@ -120,6 +128,9 @@ export class MyBooks implements OnInit {
       'book-id': book.id as number
     }).then(() => {
       book.shareable = !book.shareable;
+      if (book.archived) {
+        book.archived = false;
+      }
       this.findAllBooks();
     })
   }

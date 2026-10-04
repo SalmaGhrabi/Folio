@@ -14,7 +14,7 @@
             <i class="fas fa-archive"></i> Archived
           </span>
         }
-        @if (book.shareable) {
+        @else if (book.shareable) {
           <span class="badge shareable" title="Shareable">
             <i class="fas fa-share-nodes"></i> Shareable
           </span>
