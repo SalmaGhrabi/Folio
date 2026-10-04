@@ -120,7 +120,7 @@ export class MyBooks implements OnInit {
   }
 
   protected editBook(book: BookResponse) {
-
+    this.router.navigate(['books', 'manage', book.id])
   }
 
   protected readonly visualViewport = visualViewport;
