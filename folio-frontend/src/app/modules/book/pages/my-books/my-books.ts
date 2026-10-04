@@ -116,7 +116,12 @@ export class MyBooks implements OnInit {
   }
 
   protected shareBook(book: BookResponse) {
-
+    this.bookService.updateShareableStatus({
+      'book-id': book.id as number
+    }).then(() => {
+      book.shareable = !book.shareable;
+      this.findAllBooks();
+    })
   }
 
   protected editBook(book: BookResponse) {
