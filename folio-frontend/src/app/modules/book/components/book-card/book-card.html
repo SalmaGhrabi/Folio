@@ -6,6 +6,21 @@
     <span class="book-author">{{ book.authorName }}</span>
     <span class="book-isbn">ISBN: {{ book.isbn }}</span>
     <p class="book-synopsis">{{ book.synopsis }}</p>
+
+    @if (book.archived || book.shareable) {
+      <div class="status-badges-row">
+        @if (book.archived) {
+          <span class="badge archived" title="Archived">
+            <i class="fas fa-archive"></i> Archived
+          </span>
+        }
+        @else if (book.shareable) {
+          <span class="badge shareable" title="Shareable">
+            <i class="fas fa-share-nodes"></i> Shareable
+          </span>
+        }
+      </div>
+    }
   </div>
 
   <div class="book-footer">
