@@ -3,6 +3,7 @@ import {jwtDecode} from 'jwt-decode';
 
 interface JwtPayload {
   fullname: string;
+  exp: number;
 }
 
 @Injectable({
@@ -25,5 +26,23 @@ export class TokenService {
     }
     const decoded = jwtDecode<JwtPayload>(token);
     return decoded.fullname ?? '';
+  }
+
+  isTokenNotValid() {
+    return !this.isTokenValid();
+  }
+
+  private isTokenValid() {
+    const token = this.token;
+    if (!token) {
+      return false;
+    }
+    const decoded = jwtDecode<JwtPayload>(token);
+    const isTokenExpired = decoded.exp<Math.floor(Date.now() / 1000);
+    if (isTokenExpired) {
+      localStorage.clear();
+      return false;
+    }
+    return true;
   }
 }
