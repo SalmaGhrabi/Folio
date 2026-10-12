@@ -37,7 +37,8 @@ export class Menu {
   }
 
   protected logout(): void {
-    this.router.navigate(['/login']);
+    localStorage.removeItem('token');
+    window.location.reload();
   }
 
   protected onSearch(event: Event): void {
