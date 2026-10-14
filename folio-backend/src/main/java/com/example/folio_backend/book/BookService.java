@@ -7,6 +7,7 @@ import com.example.folio_backend.history.BookTransactionHistory;
 import com.example.folio_backend.history.BookTransactionHistoryRepository;
 import com.example.folio_backend.user.User;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,6 +35,21 @@ public class BookService {
         User user = ((User) connectedUser.getPrincipal());
         Book book = bookMapper.toBook(request);
         book.setOwner(user);
+        return bookRepository.save(book).getId();
+    }
+
+    public Integer update(Integer bookId, BookRequest request, Authentication connectedUser) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException("No book found with ID:: " + bookId));
+
+        User user = ((User) connectedUser.getPrincipal());
+        if (!book.getOwner().getId().equals(user.getId())) {
+            throw new OperationNotPermittedException("You cannot update a book that you do not own");
+        }
+        book.setTitle(request.title());
+        book.setAuthorName(request.authorName());
+        book.setIsbn(request.isbn());
+        book.setSynopsis(request.synopsis());
         return bookRepository.save(book).getId();
     }
 
