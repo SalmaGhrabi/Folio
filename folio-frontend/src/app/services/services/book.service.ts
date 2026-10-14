@@ -32,6 +32,8 @@ import { saveBook } from '../fn/book/save-book';
 import { SaveBook$Params } from '../fn/book/save-book';
 import { updateArchivedStatus } from '../fn/book/update-archived-status';
 import { UpdateArchivedStatus$Params } from '../fn/book/update-archived-status';
+import { updateBook } from '../fn/book/update-book';
+import { UpdateBook$Params } from '../fn/book/update-book';
 import { updateShareableStatus } from '../fn/book/update-shareable-status';
 import { UpdateShareableStatus$Params } from '../fn/book/update-shareable-status';
 import { uploadBookCoverPicture } from '../fn/book/upload-book-cover-picture';
@@ -41,6 +43,56 @@ import { UploadBookCoverPicture$Params } from '../fn/book/upload-book-cover-pict
 export class BookService extends BaseService {
   constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
+  }
+
+  /** Path part for operation `findBookById()` */
+  static readonly FindBookByIdPath = '/books/{book-id}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `findBookById()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  findBookById$Response(params: FindBookById$Params, context?: HttpContext): Promise<StrictHttpResponse<BookResponse>> {
+    const obs = findBookById(this.http, this.rootUrl, params, context);
+    return firstValueFrom(obs);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `findBookById$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  findBookById(params: FindBookById$Params, context?: HttpContext): Promise<BookResponse> {
+    const resp = this.findBookById$Response(params, context);
+    return resp.then((r: StrictHttpResponse<BookResponse>): BookResponse => r.body);
+  }
+
+  /** Path part for operation `updateBook()` */
+  static readonly UpdateBookPath = '/books/{book-id}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `updateBook()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  updateBook$Response(params: UpdateBook$Params, context?: HttpContext): Promise<StrictHttpResponse<number>> {
+    const obs = updateBook(this.http, this.rootUrl, params, context);
+    return firstValueFrom(obs);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `updateBook$Response()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  updateBook(params: UpdateBook$Params, context?: HttpContext): Promise<number> {
+    const resp = this.updateBook$Response(params, context);
+    return resp.then((r: StrictHttpResponse<number>): number => r.body);
   }
 
   /** Path part for operation `findAllBooks()` */
@@ -245,31 +297,6 @@ export class BookService extends BaseService {
   updateArchivedStatus(params: UpdateArchivedStatus$Params, context?: HttpContext): Promise<number> {
     const resp = this.updateArchivedStatus$Response(params, context);
     return resp.then((r: StrictHttpResponse<number>): number => r.body);
-  }
-
-  /** Path part for operation `findBookById()` */
-  static readonly FindBookByIdPath = '/books/{book-id}';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `findBookById()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  findBookById$Response(params: FindBookById$Params, context?: HttpContext): Promise<StrictHttpResponse<BookResponse>> {
-    const obs = findBookById(this.http, this.rootUrl, params, context);
-    return firstValueFrom(obs);
-  }
-
-  /**
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `findBookById$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  findBookById(params: FindBookById$Params, context?: HttpContext): Promise<BookResponse> {
-    const resp = this.findBookById$Response(params, context);
-    return resp.then((r: StrictHttpResponse<BookResponse>): BookResponse => r.body);
   }
 
   /** Path part for operation `findAllReturnedBooks()` */
