@@ -10,3 +10,8 @@ target/
 
 # OS
 .DS_Store
+
+# Images et fichiers médias téléversés
+uploads/
+uploads/**
+!uploads/.gitkeep
