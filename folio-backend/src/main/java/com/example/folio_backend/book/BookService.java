@@ -7,7 +7,6 @@ import com.example.folio_backend.history.BookTransactionHistory;
 import com.example.folio_backend.history.BookTransactionHistoryRepository;
 import com.example.folio_backend.user.User;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -31,6 +31,7 @@ public class BookService {
     private final BookTransactionHistoryRepository bookTransactionHistoryRepository;
     private final FileStorageService fileStorageService;
 
+    @Transactional
     public Integer save(BookRequest request, Authentication connectedUser) {
         User user = ((User) connectedUser.getPrincipal());
         Book book = bookMapper.toBook(request);
@@ -38,6 +39,7 @@ public class BookService {
         return bookRepository.save(book).getId();
     }
 
+    @Transactional
     public Integer update(Integer bookId, BookRequest request, Authentication connectedUser) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("No book found with ID:: " + bookId));
@@ -136,6 +138,7 @@ public class BookService {
         );
     }
 
+    @Transactional
     public Integer updateShareableStatus(Integer bookId, Authentication connectedUser) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("Book with ID : " + bookId + " not found"));
@@ -148,6 +151,7 @@ public class BookService {
         return bookId;
     }
 
+    @Transactional
     public Integer updateArchivedStatus(Integer bookId, Authentication connectedUser) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("Book with ID : " + bookId + " not found"));
@@ -164,6 +168,7 @@ public class BookService {
         return bookId;
     }
 
+    @Transactional
     public Integer borrowBook(Integer bookId, Authentication connectedUser) {
         Book book = bookRepository.findByIdForUpdate(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("Book with ID : " + bookId + " not found"));
@@ -192,6 +197,7 @@ public class BookService {
         return  bookTransactionHistoryRepository.save(bookTransactionHistory).getId();
     }
 
+    @Transactional
     public Integer returnBorrowedBook(Integer bookId, Authentication connectedUser) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("Book with ID : " + bookId + " not found"));
@@ -208,6 +214,7 @@ public class BookService {
         return bookTransactionHistoryRepository.save(bookTransactionHistory).getId();
     }
 
+    @Transactional
     public Integer approveReturnBorrowedBook(Integer bookId, Authentication connectedUser) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("Book with ID : " + bookId + " not found"));
