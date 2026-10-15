@@ -1,7 +1,10 @@
 package com.example.folio_backend.handler;
 
 import com.example.folio_backend.exception.OperationNotPermittedException;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.mail.MessagingException;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -9,6 +12,7 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -41,6 +45,28 @@ public class GlobalExceptionHandler {
                         ExceptionResponse.builder()
                                 .businessErrorCode(ACCOUNT_DISABLED.getCode())
                                 .businessErrorDescription(ACCOUNT_DISABLED.getDescription())
+                                .error(exp.getMessage())
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleException(EntityNotFoundException exp) {
+        return ResponseEntity
+                .status(NOT_FOUND)
+                .body(
+                        ExceptionResponse.builder()
+                                .error(exp.getMessage())
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<ExceptionResponse> handleException(ResponseStatusException exp) {
+        return ResponseEntity
+                .status(exp.getStatusCode())
+                .body(
+                        ExceptionResponse.builder()
                                 .error(exp.getMessage())
                                 .build()
                 );
@@ -95,6 +121,17 @@ public class GlobalExceptionHandler {
                 .body(
                         ExceptionResponse.builder()
                                 .validationErrors(errors)
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ExceptionResponse> handleException(ExpiredJwtException exp) {
+        return ResponseEntity
+                .status(UNAUTHORIZED)
+                .body(
+                        ExceptionResponse.builder()
+                                .error("JWT token has expired")
                                 .build()
                 );
     }
