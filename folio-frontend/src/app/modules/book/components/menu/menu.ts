@@ -27,7 +27,7 @@ export class Menu {
   protected readonly navItems: readonly NavItem[] = [
     { label: 'Home', route: '/books', icon: 'fa-home-alt', exact: true },
     { label: 'My books', route: '/books/my-books', icon: 'fa-book' },
-    { label: 'My waiting list', route: '/books/my-waiting-list', icon: 'fa-heart' },
+    //{ label: 'My waiting list', route: '/books/my-waiting-list', icon: 'fa-heart' },
     { label: 'Returned books', route: '/books/my-returned-books', icon: 'fa-arrows-turn-right' },
     { label: 'Borrowed books', route: '/books/my-borrowed-books', icon: 'fa-clock' },
   ];
