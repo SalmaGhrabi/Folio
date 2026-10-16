@@ -48,6 +48,9 @@ public class BookService {
         if (!book.getOwner().getId().equals(user.getId())) {
             throw new OperationNotPermittedException("You cannot update a book that you do not own");
         }
+        if (book.isShareable() && !request.shareable()){
+            assertNotCurrentlyBorrowed(bookId, "You cannot make a book non-shareable while it is borrowed!");
+        }
         book.setTitle(request.title());
         book.setAuthorName(request.authorName());
         book.setIsbn(request.isbn());
@@ -146,6 +149,9 @@ public class BookService {
         if(!Objects.equals(user.getId(), book.getOwner().getId())) {
             throw new OperationNotPermittedException("You cannot update others books shareable status!");
         }
+        if(book.isShareable()) {
+            assertNotCurrentlyBorrowed(bookId, "You cannot make a book non-shareable while it is borrowed!");
+        }
         book.setShareable(!book.isShareable());
         bookRepository.save(book);
         return bookId;
@@ -159,9 +165,8 @@ public class BookService {
         if(!Objects.equals(user.getId(), book.getOwner().getId())) {
             throw new OperationNotPermittedException("You cannot update others books archived status!");
         }
-        boolean isAlreadyBorrowed = bookTransactionHistoryRepository.isAlreadyBorrowed(bookId);
-        if(isAlreadyBorrowed) {
-            throw new OperationNotPermittedException("You cannot archive a book that is currently borrowed!");
+        if (!book.isArchived()) {
+            assertNotCurrentlyBorrowed(bookId, "You cannot archive a book while it is borrowed!");
         }
         book.setArchived(!book.isArchived());
         bookRepository.save(book);
@@ -245,5 +250,11 @@ public class BookService {
         bookRepository.save(book);
 
 
+    }
+
+    private void assertNotCurrentlyBorrowed(Integer bookId, String message) {
+        if (bookTransactionHistoryRepository.isAlreadyBorrowed(bookId)) {
+            throw new OperationNotPermittedException(message);
+        }
     }
 }
