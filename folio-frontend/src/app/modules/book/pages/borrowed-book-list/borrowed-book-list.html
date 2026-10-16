@@ -1,0 +1,168 @@
+<div class="borrowed-page">
+
+  <div class="borrowed-header">
+    <div>
+      <h2>Borrowed Books</h2>
+      <p>Manage your borrowed books and share your feedback</p>
+    </div>
+    <div class="header-controls">
+      <label for="pageSize">Items per page</label>
+      <select id="pageSize" [ngModel]="size()" (ngModelChange)="onSizeChange($event)">
+        <option [ngValue]="5">5</option>
+        <option [ngValue]="10">10</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="books-grid">
+    @for (book of borrowedBooksResponse().content; track book.id) {
+      <div class="borrowed-card">
+        <div class="borrowed-card-body">
+          <div class="borrowed-card-info">
+            <span class="borrowed-title">{{ book.title }}</span>
+            <span class="borrowed-author">{{ book.authorName }}</span>
+            <span class="borrowed-isbn">ISBN: {{ book.isbn }}</span>
+          </div>
+          <div class="borrowed-card-meta">
+            <app-rating [rating]="book.rate || 0" />
+            <div class="status-badges">
+              @if (book.returnApproved) {
+                <span class="badge badge-approved">Approved return</span>
+              } @else if (book.returned) {
+                <span class="badge badge-pending">Pending return approval</span>
+              } @else {
+                <span class="badge badge-active">Unreturned</span>
+              }
+            </div>
+          </div>
+        </div>
+        @if (!book.returned) {
+          <button class="btn-return-book" (click)="openReturnModal(book)">
+            Return book
+          </button>
+        }
+      </div>
+    } @empty {
+      <div class="empty-state">
+        <p>You have no borrowed books at the moment.</p>
+      </div>
+    }
+  </div>
+
+  @if (totalPages() >= 1) {
+    <div class="pagination-wrap">
+      <nav class="pagination">
+        <button class="page-btn" (click)="goToFirstPage()" [disabled]="page() === 0">
+          <i class="fas fa-angles-left"></i>
+        </button>
+        <button class="page-btn" (click)="goToPreviousPage()" [disabled]="page() === 0">
+          <i class="fas fa-angle-left"></i>
+        </button>
+        @for (pageIndex of visiblePages(); track pageIndex) {
+          <button class="page-btn" [class.active]="page() === pageIndex" (click)="goToPage(pageIndex)">
+            {{ pageIndex + 1 }}
+          </button>
+        }
+        <button class="page-btn" (click)="goToNextPage()" [disabled]="isLastPage()">
+          <i class="fas fa-angle-right"></i>
+        </button>
+        <button class="page-btn" (click)="goToLastPage()" [disabled]="isLastPage()">
+          <i class="fas fa-angles-right"></i>
+        </button>
+      </nav>
+      <span class="pagination-info">
+        Page {{ page() + 1 }} of {{ totalPages() }}
+        ({{ borrowedBooksResponse()?.totalElements ?? 0 }} total)
+      </span>
+    </div>
+  }
+
+</div>
+
+@if (selectedBook()) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <div>
+          <h3>Return book</h3>
+          <p>{{ selectedBook()?.title }}</p>
+        </div>
+        <button class="modal-close" (click)="closeModal()">✕</button>
+      </div>
+
+      <div class="modal-book-info">
+        <div class="modal-info-row">
+          <span class="modal-info-label">Author</span>
+          <span class="modal-info-value">{{ selectedBook()?.authorName }}</span>
+        </div>
+        <div class="modal-info-row">
+          <span class="modal-info-label">ISBN</span>
+          <span class="modal-info-value">{{ selectedBook()?.isbn }}</span>
+        </div>
+        <div class="modal-info-row">
+          <span class="modal-info-label">Rating</span>
+          <app-rating [rating]="selectedBook()?.rate || 0" />
+        </div>
+      </div>
+
+      @if (errorMsg().length > 0) {
+        <div class="modal-error">
+          @for (msg of errorMsg(); track $index) {
+            <p>{{ msg }}</p>
+          }
+        </div>
+      }
+
+      <div class="feedback-toggle-wrap">
+        <button class="feedback-toggle" (click)="toggleFeedback()">
+          @if (showFeedback()) {
+            <i class="fas fa-chevron-up"></i> Hide review
+          } @else {
+            <i class="fas fa-pencil"></i> Add a review ✍️
+          }
+        </button>
+      </div>
+
+      @if (showFeedback()) {
+        <div class="feedback-section">
+          <div class="star-rating">
+            <span class="star-label">Your rating</span>
+            <div class="stars-input">
+              @for (star of [1,2,3,4,5]; track star) {
+                <button
+                  class="star-btn"
+                  [class.active]="star <= feedbackNote()"
+                  (click)="setRating(star)"
+                  (mouseenter)="setRating(star)"
+                  (mouseleave)="setRating(star)"
+                  type="button">
+                  ★
+                </button>
+              }
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="comment">Your review</label>
+            <textarea
+              [(ngModel)]="feedbackRequest.comment"
+              id="comment"
+              name="comment"
+              rows="4"
+              placeholder="Share your thoughts about this book..."
+              class="form-input"
+            ></textarea>
+          </div>
+        </div>
+      }
+
+      <div class="modal-actions">
+        <button class="btn-cancel-modal" (click)="closeModal()">Cancel</button>
+        <button class="btn-confirm-return" (click)="returnBook()">
+          Return book
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

@@ -1,0 +1,164 @@
+.activate-page {
+  min-height: 100vh;
+  background: #f7f8fc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  padding: 40px 20px;
+}
+
+.activate-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.folio-logo {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1a1a2e;
+  letter-spacing: -1px;
+  margin-bottom: 8px;
+}
+
+.folio-logo span {
+  color: #6c8fff;
+}
+
+.activate-card h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0;
+}
+
+.activate-card p {
+  font-size: 14px;
+  color: #888;
+  line-height: 1.7;
+  max-width: 340px;
+  margin: 0;
+}
+
+/* CODE INPUTS */
+.code-inputs {
+  display: flex;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.code-box {
+  width: 52px;
+  height: 60px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a2e;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  outline: none;
+  background: #f7f8fc;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  caret-color: #6c8fff;
+}
+
+.code-box:focus {
+  border-color: #6c8fff;
+  box-shadow: 0 0 0 3px rgba(108, 143, 255, 0.15);
+  background: #ffffff;
+}
+
+/* ICON */
+.activate-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.activate-icon.success {
+  background: #f0fdf4;
+  color: #16a34a;
+  border: 2px solid #bbf7d0;
+}
+
+.activate-icon.error {
+  background: #fff2f2;
+  color: #e53e3e;
+  border: 2px solid #ffcccc;
+}
+
+/* BUTTONS */
+.btn-activate {
+  width: 100%;
+  padding: 13px;
+  background: linear-gradient(135deg, #6c8fff, #a78bfa);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+  letter-spacing: 0.3px;
+  margin-top: 8px;
+}
+
+.btn-activate:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn-retry {
+  background: linear-gradient(135deg, #e53e3e, #fc8181);
+}
+
+.resend-link {
+  font-size: 13px;
+  color: #888;
+  margin: 0;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: #6c8fff;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 0;
+  margin-left: 4px;
+}
+
+.btn-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .activate-card {
+    padding: 32px 20px;
+  }
+
+  .code-box {
+    width: 42px;
+    height: 52px;
+    font-size: 20px;
+  }
+
+  .code-inputs {
+    gap: 8px;
+  }
+}

@@ -1,0 +1,126 @@
+<div class="manage-page">
+
+  <div class="manage-header">
+    <div>
+      <h2>{{ isEditMode() ? 'Edit Book' : 'Add a New Book' }}</h2>
+      <p>{{ isEditMode() ? 'Update your book details below' : 'Share a book with the Folio community' }}</p>
+    </div>
+    <a routerLink="/books/my-books" class="btn-cancel">
+      ✕ Cancel
+    </a>
+  </div>
+
+  @if (errorMsg().length > 0) {
+    <div class="manage-error">
+      @for (msg of errorMsg(); track $index) {
+        <p>{{ msg }}</p>
+      }
+    </div>
+  }
+
+  <div class="manage-content">
+
+    <!-- COVER UPLOAD -->
+    <div class="cover-section">
+      <div class="cover-preview" [class.has-image]="selectedPicture()">
+        @if (selectedPicture()) {
+          <img
+            [src]="selectedPicture()"
+            alt="Book Cover"
+          />
+          <button class="remove-image" (click)="removeImage()" type="button">✕</button>
+        } @else {
+          <div class="cover-empty">
+            <i class="fas fa-image"></i>
+            <p>No cover image</p>
+          </div>
+        }
+      </div>
+      <label class="upload-btn" for="coverInput">
+        <i class="fas fa-upload"></i>
+        {{ selectedPicture() ? 'Change cover' : 'Upload cover' }}
+      </label>
+      <input
+        id="coverInput"
+        type="file"
+        accept="image/*"
+        (change)="onFileSelected($event)"
+        hidden
+      />
+    </div>
+
+    <!-- FORM -->
+    <div class="form-section">
+
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input
+          [(ngModel)]="bookRequest.title"
+          type="text"
+          id="title"
+          name="title"
+          placeholder="Book title"
+          class="form-input"
+        />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="author">Author name</label>
+          <input
+            [(ngModel)]="bookRequest.authorName"
+            type="text"
+            id="author"
+            name="author"
+            placeholder="Author name"
+            class="form-input"
+          />
+        </div>
+        <div class="form-group">
+          <label for="isbn">ISBN</label>
+          <input
+            [(ngModel)]="bookRequest.isbn"
+            type="text"
+            id="isbn"
+            name="isbn"
+            placeholder="978-..."
+            class="form-input"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="synopsis">Synopsis</label>
+        <textarea
+          [(ngModel)]="bookRequest.synopsis"
+          id="synopsis"
+          name="synopsis"
+          placeholder="A brief description of the book..."
+          class="form-input"
+          rows="5"
+        ></textarea>
+      </div>
+
+      <div class="form-check">
+        <input
+          [(ngModel)]="bookRequest.shareable"
+          type="checkbox"
+          id="shareable"
+          name="shareable"
+          class="check-input"
+        />
+        <label for="shareable" class="check-label">
+          Make this book available for borrowing
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button (click)="saveBook()" type="button" class="btn-save">
+          <i class="fas fa-save"></i>
+          {{ isEditMode() ? 'Update Book' : 'Save Book' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,8 +1,9 @@
 import { Component, signal } from '@angular/core';
-import {BrowserModule} from '@angular/platform-browser';
+import {FormsModule} from '@angular/forms';
+import {RouterOutlet} from '@angular/router';
 
 @Component({
-  imports: [BrowserModule],
+  imports: [FormsModule, RouterOutlet],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',

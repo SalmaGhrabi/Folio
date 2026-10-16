@@ -1,0 +1,50 @@
+@if (submitted()) {
+  <div class="activate-page">
+    <div class="activate-card">
+      <div class="folio-logo">Folio<span>.</span></div>
+
+      @if (isOkay()) {
+        <div class="activate-icon success">✓</div>
+        <h2>Account activated!</h2>
+        <p>Your account has been successfully activated. You can now sign in to Folio.</p>
+        <button class="btn-activate" (click)="redirectToLogin()">Go to Login →</button>
+      } @else {
+        <div class="activate-icon error">✕</div>
+        <h2>Activation failed</h2>
+        <p>{{ message() }}</p>
+        <button class="btn-activate btn-retry" (click)="tryAgain()">Try again</button>
+      }
+    </div>
+  </div>
+} @else {
+  <div class="activate-page">
+    <div class="activate-card">
+      <div class="folio-logo">Folio<span>.</span></div>
+      <h2>Check your email</h2>
+      <p>We sent a 6-digit activation code to your email address. Enter it below to activate your account.</p>
+
+      <div class="code-inputs">
+        @for (digit of code(); track $index; let i = $index) {
+          <input
+            #codeInput
+            type="text"
+            inputmode="numeric"
+            maxlength="1"
+            class="code-box"
+            autocomplete="one-time-code"
+            [attr.aria-label]="'Activation code digit ' + (i+1)"
+            [value]="digit"
+            (input)="onInput($event, i)"
+            (keydown)="onKeydown($event, i)"
+            (paste)="onPaste($event, i)"
+          />
+        }
+      </div>
+
+      <p class="resend-link">
+        Didn't receive the code?
+        <button type="button" class="btn-link" (click)="redirectToLogin()">Go back</button>
+      </p>
+    </div>
+  </div>
+}

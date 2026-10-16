@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -24,6 +25,7 @@ public class FeedbackService {
     private final FeedbackMapper feedbackMapper;
     private final FeedbackRepository feedbackRepository;
 
+    @Transactional
     public Integer save(FeedbackRequest request, Authentication connectedUser) {
         Book book = bookRepository.findById(request.bookId())
                 .orElseThrow(() -> new EntityNotFoundException("Book with ID : " + request.bookId() + " not found"));
