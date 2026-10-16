@@ -31,6 +31,77 @@
     }
   ],
   "paths": {
+    "/books/{book-id}": {
+      "get": {
+        "tags": [
+          "Book"
+        ],
+        "operationId": "findBookById",
+        "parameters": [
+          {
+            "name": "book-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Book"
+        ],
+        "operationId": "updateBook",
+        "parameters": [
+          {
+            "name": "book-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/feedbacks": {
       "post": {
         "tags": [
@@ -453,37 +524,6 @@
         }
       }
     },
-    "/books/{book-id}": {
-      "get": {
-        "tags": [
-          "Book"
-        ],
-        "operationId": "findBookById",
-        "parameters": [
-          {
-            "name": "book-id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BookResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/books/returned": {
       "get": {
         "tags": [
@@ -636,28 +676,6 @@
   },
   "components": {
     "schemas": {
-      "FeedbackRequest": {
-        "required": [
-          "bookId",
-          "comment"
-        ],
-        "type": "object",
-        "properties": {
-          "note": {
-            "maximum": 5,
-            "minimum": 0,
-            "type": "number",
-            "format": "double"
-          },
-          "comment": {
-            "type": "string"
-          },
-          "bookId": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
       "BookRequest": {
         "required": [
           "authorName",
@@ -685,6 +703,28 @@
           },
           "shareable": {
             "type": "boolean"
+          }
+        }
+      },
+      "FeedbackRequest": {
+        "required": [
+          "bookId",
+          "comment"
+        ],
+        "type": "object",
+        "properties": {
+          "note": {
+            "maximum": 5,
+            "minimum": 0,
+            "type": "number",
+            "format": "double"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "bookId": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },

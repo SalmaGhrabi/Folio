@@ -26,6 +26,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -41,7 +43,10 @@ public class AuthenticationService {
     private String activationUrl;
 
     public void register(RegistrationRequest request) throws MessagingException {
-         var userRole = roleRepository.findByName("USER")
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is already in use");
+        }
+        var userRole = roleRepository.findByName("USER")
                  // TODO- better exception HANDLING
                  .orElseThrow(() -> new IllegalStateException("ROLE USER was not initialized"));
          var user = User.builder()
@@ -53,9 +58,6 @@ public class AuthenticationService {
                  .enabled(false)
                  .roles(List.of(userRole))
                  .build();
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is already in use");
-        }
          userRepository.save(user);
          sendValidationEmail(user);
     }
@@ -74,7 +76,6 @@ public class AuthenticationService {
     }
 
     private String generateAndSaveActivationToken(User user) {
-        //generate token
         String generatedToken = generateActivationCode(6);
         var token = Token.builder()
                 .token(generatedToken)
@@ -115,11 +116,10 @@ public class AuthenticationService {
      //@Transactional
     public void activateAccount(String token) throws MessagingException {
         Token savedToken= tokenRepository.findByToken(token)
-                //todo exception has to be defined
-                .orElseThrow(() -> new RuntimeException("TOKEN DOES NOT EXIST"));
+                .orElseThrow(() -> new ResponseStatusException(BAD_REQUEST, "Invalid activation code"));
         if (LocalDateTime.now().isAfter(savedToken.getExpiresAt())) {
             sendValidationEmail(savedToken.getUser());
-            throw new RuntimeException("This activation token is expired. A new token has been sent to the same email address. ");
+            throw new ResponseStatusException(BAD_REQUEST,"This activation token is expired. A new token has been sent to the same email address.");
         }
         var user = userRepository.findById(savedToken.getUser().getId())
             .orElseThrow(() -> new UsernameNotFoundException("USER DOES NOT EXIST"));

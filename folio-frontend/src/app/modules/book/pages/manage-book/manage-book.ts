@@ -63,7 +63,16 @@ export class ManageBook implements OnInit {
     this.errorMsg.set([]);
 
     try {
-      const bookId = await this.bookService.saveBook({ body: this.bookRequest });
+      let bookId: number;
+
+      if (this.isEditMode() && this.bookRequest.id) {
+        bookId = await this.bookService.updateBook({
+          'book-id': this.bookRequest.id,
+          body: this.bookRequest
+        });
+      } else {
+        bookId = await this.bookService.saveBook({ body: this.bookRequest });
+      }
 
       if (this.selectedBookCover) {
         await this.bookService.uploadBookCoverPicture({

@@ -65,7 +65,6 @@ export class BookList implements OnInit {
       size: this.size()
     }).then(
      (books) => {
-       console.log("Backend response: ", books);
        this.bookResponse.set(books);
      })
     .catch((e) => {
@@ -120,15 +119,13 @@ export class BookList implements OnInit {
       'book-id': book.id as number
       }).then(
       (borrowedBook) => {
-        console.log('Borrow:', borrowedBook);
         this.level.set('success');
         this.message.set('Book successfully added to your list');
         this.findAllBooks();
       })
     .catch((err) => {
-      console.log('Error borrowing book',err);
       this.level.set('error');
-      this.message.set(err.error.error);
+      this.message.set(err.error?.error ?? 'Something went wrong. Please try again');
     });
   }
 
@@ -139,6 +136,4 @@ export class BookList implements OnInit {
   protected onAddToWaitingList(book: BookResponse) {
     console.log('Waiting list:', book);
   }
-
-  protected readonly visualViewport = visualViewport;
 }

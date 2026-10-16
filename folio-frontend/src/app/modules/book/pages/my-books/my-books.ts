@@ -19,6 +19,8 @@ export class MyBooks implements OnInit {
   protected bookResponse = signal<PageResponseBookResponse>({});
   protected page = signal<number>(0);
   protected size = signal<number>(5);
+  protected message = signal<string>('');
+  protected level = signal<'success' | 'error'>('success');
 
   protected totalPages = computed(() => this.bookResponse()?.totalPages ?? 0);
 
@@ -112,32 +114,34 @@ export class MyBooks implements OnInit {
   }
 
   protected archiveBook(book: BookResponse) {
+    this.message.set('');
     this.bookService.updateArchivedStatus({
       'book-id': book.id as number
     }).then(() => {
-      book.archived = !book.archived;
-      if (book.shareable) {
-        book.shareable = false;
-      }
+      this.level.set('success');
+      this.message.set('Book archived status updated successfully');
       this.findAllBooks();
-    })
+    }).catch((err) => {
+      this.level.set('error');
+      this.message.set(err.error?.error ?? 'Cannot archive a book that is currently borrowed');
+    });
   }
 
   protected shareBook(book: BookResponse) {
+    this.message.set('');
     this.bookService.updateShareableStatus({
       'book-id': book.id as number
     }).then(() => {
-      book.shareable = !book.shareable;
-      if (book.archived) {
-        book.archived = false;
-      }
+      this.level.set('success');
+      this.message.set('Book shareable status updated successfully');
       this.findAllBooks();
-    })
+    }).catch((err) => {
+      this.level.set('error');
+      this.message.set(err.error?.error ?? 'Could not update shareable status');
+    });
   }
 
   protected editBook(book: BookResponse) {
     this.router.navigate(['books', 'manage', book.id])
   }
-
-  protected readonly visualViewport = visualViewport;
 }

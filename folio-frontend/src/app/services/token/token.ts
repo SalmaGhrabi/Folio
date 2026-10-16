@@ -45,4 +45,8 @@ export class TokenService {
     }
     return true;
   }
+
+  public clear () {
+    localStorage.clear();
+  }
 }

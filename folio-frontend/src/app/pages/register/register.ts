@@ -30,13 +30,14 @@ export class Register {
         body: this.registerRequest
     }).then(result => {
       this.router.navigate(['activate-account']);
-    }).catch(error => {
-      if (error.error?.validationErrors) {
-        this.errorMessage.set(error.error.validationErrors);
-      } else if (error.error?.errorMessage) {
-        this.errorMessage.set([error.error.errorMessage]);
+    }).catch(err => {
+      console.error('Registration error:', err);
+      if (err.error?.validationErrors) {
+        this.errorMessage.set(err.error.validationErrors);
+      } else if (err.error?.error) {
+        this.errorMessage.set([err.error.error]);
       } else {
-        this.errorMessage.set(['Something went wrong. Please try again.']);
+        this.errorMessage.set(['Une erreur est survenue lors de l\'inscription.']);
       }
     })
   }
