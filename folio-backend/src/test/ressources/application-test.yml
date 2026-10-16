@@ -6,3 +6,17 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop
+  mail:
+    host: localhost
+    port: 1025
+
+application:
+  security:
+    jwt:
+      # Test-only key, never reuse it outside tests
+      secret-key: jvv3RTgd1Irj5TnNVH9raRjWGUMUedZBJ2BfMpvLcwiTjQJLNqFzAiOBPEGPiqrF
+      expiration: 8640000
+  mailing:
+    frontend:
+      activation-url: http://localhost:4200/activate-account
+    sender: test@folio.com
